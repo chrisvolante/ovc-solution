@@ -4,17 +4,30 @@ import { User, fetchUsers } from '../actions';
 import { StoreState } from '../reducers';
 
 interface AppProps {
-  users: User[];
+  users: StoreState['users'];
   fetchUsers: Function;
 }
 
-class _App extends React.Component<AppProps> {
+interface AppState{
+  fetching: boolean;
+}
+
+class _App extends React.Component<AppProps, AppState> {
+  state = { fetching: false };
+
+  componentDidUpdate(prevProps: AppProps): void {
+    if (!prevProps.users.length && this.props.users.length) {
+      this.setState({ fetching:false });
+    }
+  }
+
   onButtonClick = (): void => {
     this.props.fetchUsers();
+    this.setState({ fetching: true });
   };
 
-  renderUserTable(): JSX.Element {
-    const userRow = this.props.users.map((user: User): JSX.Element => {
+  renderUserTable(users: User[]): JSX.Element {
+    const userRow = users.map((user) => {
       return (
         <tr key={user.id}>
           <td>{user.name}</td>
@@ -45,13 +58,16 @@ class _App extends React.Component<AppProps> {
         <button onClick={this.onButtonClick}>
           Generate Table of Users
         </button>
-        {this.renderUserTable()}
+        {this.state.fetching && 'Loading'}
+        {this.props.users === 'notLoaded' ? null :
+          this.props.users.length ? this.renderUserTable(this.props.users) : ''
+        }
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ users }: StoreState): { users: User[] } => {
+const mapStateToProps = ({ users }: StoreState) => {
   return { users };
 }
 

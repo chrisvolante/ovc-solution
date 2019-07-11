@@ -1,7 +1,9 @@
 import { User, Action, ActionTypes } from '../actions';
 
+export type UsersState = User[] | 'notLoaded';
+
 export const usersReducer = (
-  state: User[] = [], 
+  state: UsersState = [], 
   action: Action
   ) => {
     switch (action.type) {
