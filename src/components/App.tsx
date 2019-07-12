@@ -16,7 +16,7 @@ class _App extends React.Component<AppProps, AppState> {
   state = { fetching: false };
 
   componentDidUpdate(prevProps: AppProps): void {
-    if (!prevProps.users.length && this.props.users.length) {
+    if (!prevProps.users.users.length && this.props.users.users.length) {
       this.setState({ fetching:false });
     }
   }
@@ -58,10 +58,8 @@ class _App extends React.Component<AppProps, AppState> {
         <button onClick={this.onButtonClick}>
           Generate Table of Users
         </button>
-        {this.state.fetching && 'Loading'}
-        {this.props.users === 'notLoaded' ? null :
-          this.props.users.length ? this.renderUserTable(this.props.users) : ''
-        }
+        {this.state.fetching && !this.props.users.isLoaded && 'Loading'}
+        {this.props.users.isLoaded && this.renderUserTable(this.props.users.users)}
       </div>
     );
   }
